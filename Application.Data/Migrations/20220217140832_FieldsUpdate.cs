@@ -4,7 +4,7 @@
 
 namespace Application.Data.Migrations
 {
-    public partial class maj : Migration
+    public partial class FieldsUpdate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

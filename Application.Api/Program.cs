@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Application.Core.Service.Imp;
+using Application.Core.Service.Itf;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -13,7 +15,12 @@ ConfigurationManager configuration = builder.Configuration;
 
 // For Entity Framework
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("ConnStr")));
-
+//Service Mapping
+builder.Services.AddTransient<ITokenService, TokenService>();
+builder.Services.AddTransient<IAuthenticateService, AuthenticateService>();
+builder.Services.AddTransient<IUserService, UserService>();
+// Auto mapper service
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // For Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
