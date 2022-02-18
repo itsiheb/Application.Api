@@ -2,6 +2,10 @@
 using System.Security.Claims;
 using Application.Data.Model;
 
+// <Summary>
+// this is the ITokenService Interface where we can find all the methods that will be implemented later
+// in the TokenService Class
+// </summary>
 
 namespace Application.Core.Service.Itf
 {

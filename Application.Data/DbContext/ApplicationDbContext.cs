@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace Application.Data.Migrations
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
