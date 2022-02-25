@@ -1,8 +1,6 @@
 ﻿using Application.Data.Model;
 using Microsoft.AspNetCore.Mvc;
-
-// <Summary> this is the IAuthenticateService Interface where we can find all the methods that will be implemented later in
-// the AuthenticateService Class </summary>
+using System.Web.Http;
 
 namespace Application.Core.Service.Itf
 {

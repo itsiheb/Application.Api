@@ -8,32 +8,24 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-// <Summary>
-// in this TokenService class we will be implementing all the methods from our ITokenService Interface
-// </summary>
 namespace Application.Core.Service.Imp
-{ 
+{
     public class TokenService : ITokenService
     {
         private readonly IConfiguration _configuration;
         private readonly UserManager<ApplicationUser> _userManager;
-        // <Summary>
-        // this is the constructor of the TokenService where we inject the IConfiguration and the mapper userManager for later use.
-        // </summary>
         public TokenService(IConfiguration configuration, UserManager<ApplicationUser> userManager)
         {
             _configuration = configuration;
             _userManager = userManager;
         }
-
-        // <Summary> in this method will be refreshing the token of the logged in user </summary>
         public async Task<Response> RefreshToken(TokenModel tokenModel)
         {
             if (tokenModel is null)
             {
                 return new Response
                 {
-                    Status = 402,
+                    Status = "402",
                     Message = "token is null "
                 };
             }
@@ -46,19 +38,23 @@ namespace Application.Core.Service.Imp
             {
                 return new Response
                 {
-                    Status = 401,
+                    Status = "401",
                     Message = "Invalid access token or refresh token"
                 };
             }
-
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             string username = principal.Identity.Name;
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+
             var user = await _userManager.FindByNameAsync(username);
 
             if (user == null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
             {
                 return new Response
                 {
-                    Status = 400,
+                    Status = "300",
                     Message = "Invalid access token or refresh token"
                 };
             }
@@ -74,12 +70,10 @@ namespace Application.Core.Service.Imp
 
             return new Response
             {
-                Status = 400,
+                Status = "200",
                 Message = $" accessToken {accessToken} \n"
             };
         }
-
-        // <Summary> in this method will be generating a refreshed token with a random number generator </summary>
         public static string GenerateRefreshToken()
         {
             var randomNumber = new byte[64];
@@ -88,14 +82,13 @@ namespace Application.Core.Service.Imp
             return Convert.ToBase64String(randomNumber);
         }
 
-        // <Summary> in this method will be revoking the token with all its claims from certain user  </summary>
         public async Task<Response> Revoke(string username)
         {
             var user = await _userManager.FindByNameAsync(username);
             if (user == null)
                 return new Response
                 {
-                    Status = 200,
+                    Status = "200",
                     Message = "Invalid user name"
                 };
 
@@ -104,12 +97,11 @@ namespace Application.Core.Service.Imp
 
                 return new Response
                 {
-                    Status = 200,
+                    Status = "200",
                     Message = "success"
                 };
         }
 
-        // <Summary> in this method will be revoking the token with all its claims from all the users this time </summary>
         public async Task<Response> RevokeAll()
         {
             var users = _userManager.Users.ToList();
@@ -121,12 +113,11 @@ namespace Application.Core.Service.Imp
 
             return new Response
             {
-                Status = 200,
+                Status = "200",
                 Message = "revoked successfully"
             };
         }
 
-        // <Summary> in this method will be revoking the token with all its claims from certain user  </summary>
         public JwtSecurityToken CreateToken(List<Claim> authClaims)
         {
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
@@ -143,7 +134,6 @@ namespace Application.Core.Service.Imp
             return token;
         }
 
-        // <Summary> this is the method that will be used in the refresh token to identify the user that will get the refreshed token  </summary>
         public ClaimsPrincipal? GetPrincipalFromExpiredToken(string? token)
         {
             var tokenValidationParameters = new TokenValidationParameters
